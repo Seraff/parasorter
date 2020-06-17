@@ -31,6 +31,29 @@ const template = [
         label: 'Find',
         accelerator: 'CmdOrCtrl+F'
       },
+      {
+        type: 'separator'
+      },
+      {
+        label: "Cut",
+        accelerator: "CmdOrCtrl+X",
+        role: "cut"
+      },
+      {
+        label: 'Copy',
+        accelerator: 'CmdOrCtrl+C',
+        role: "copy"
+      },
+      {
+        label: "Paste",
+        accelerator: "CmdOrCtrl+V",
+        role: "paste"
+      },
+      {
+        label: "Select All",
+        role: 'selectAll',
+        accelerator: "CmdOrCtrl+A"
+      },
     ]
   },
   {

@@ -1,6 +1,8 @@
 'use strict';
 
-const app = require('electron');
+const app = require('electron')
+const { BrowserWindow, dialog } = require('electron').remote
+const fs = require('fs')
 const FindInPage = require('electron-find').FindInPage
 
 function download(data, filename) {
@@ -269,56 +271,72 @@ var tsv_applied = false;
 var modes_touched = false;
 
 $(document).ready(function () {
+  var $spinner = $('#loading-block')
 
-  $('#openTreeButton').on("click", function(modal_e){
+  var show_spinner = () => {
+    $spinner.show()
+  }
+
+  var hide_spinner = () => {
+    $spinner.hide()
+  }
+
+  $('#open-button').on("click", (e) => {
+    if (modes_touched && !confirm('Are you sure? All unsaved data will be lost.')){
+      return undefined
+    }
+
+    var options = {
+      properties: ['openFile'],
+      filters: [{ name: 'Tree files', extensions: ['svg'] }, { name: 'All files', extensions: ['*'] }],
+      title: 'Open tree'
+    }
+
+    show_spinner()
+
+    dialog.showOpenDialog(options).then(result => {
+      if (result.filePaths.length == 0) {
+        hide_spinner()
+        return false
+      }
+
+      var path = result.filePaths[0]
+      fs.readFile(path, 'utf8', (err, data) => {
+        openSVG(data)
+        modes_touched = false
+        hide_spinner()
+      })
+
+    })
+  })
+
+  $('#apply-button').on("click", (e) => {
     if (modes_touched && !confirm('Are you sure? All unsaved data will be lost.')){
       return undefined;
     }
 
-    var file = $('#openTreeInput')[0].files[0];
-
-    if (file != undefined){
-      var reader = new FileReader();
-      reader.readAsText(file);
-
-      $(modal_e.target).addClass('disabled');
-      $(modal_e.target).children("span").removeClass('d-none');
-
-      reader.onload = function(e){
-        openSVG(reader.result);
-        modes_touched = false;
-
-        $(modal_e.target).removeClass('disabled');
-        $(modal_e.target).children("span").addClass('d-none');
-
-        $("#openTreeModal").modal('toggle');
-      };
-    }
-  });
-
-  $('#applyCSVFileButton').on("click", function(modal_e){
-    if (modes_touched && !confirm('Are you sure? All unsaved data will be lost.')){
-      return undefined;
+    var options = {
+      properties: ['openFile'],
+      filters: [{ name: 'TSV files', extensions: ['tsv'] }, { name: 'All files', extensions: ['*'] }],
+      title: 'Import TSV'
     }
 
-    var file = $('#applyCSVFileInput')[0].files[0];
+    show_spinner()
 
-    if (file != undefined){
-      var reader = new FileReader();
-      reader.readAsText(file);
+    dialog.showOpenDialog(options).then(result => {
+      if (result.filePaths.length == 0) {
+        hide_spinner()
+        return false
+      }
 
-      $(modal_e.target).addClass('disabled');
-      $(modal_e.target).children("span").removeClass('d-none');
-
-      reader.onload = function(e){
-        applyCSV(reader.result);
-        $(modal_e.target).removeClass('disabled');
-        $(modal_e.target).children("span").addClass('d-none');
-
-        $("#applyCSVModal").modal('toggle');
-      };
-    }
-  });
+      var path = result.filePaths[0]
+      fs.readFile(path, 'utf8', (err, data) => {
+        applyCSV(data)
+        modes_touched = false
+        hide_spinner()
+      })
+    })
+  })
 
   function generateAndDownloadTsv(){
     var text = buildCsv(elements);
