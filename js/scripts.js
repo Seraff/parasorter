@@ -445,5 +445,13 @@ $(document).ready(function () {
     findInPage.openFindWindow()
   })
 
+  // Quit
+  menu.setCallbackOnItem('quit', () => {
+    if (modes_touched && !confirm('Are you sure? All unsaved data will be lost.')) {
+      return true
+    }
+
+    app.remote.app.quit()
+  })
 
 });
