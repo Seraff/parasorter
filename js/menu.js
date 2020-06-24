@@ -13,7 +13,7 @@ const template = [
       },
       {
         id: "apply-tsv",
-        label: "Apply tsv",
+        label: "Import tsv",
         accelerator: "CmdOrCtrl+Shift+O"
       },
       {
