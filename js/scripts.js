@@ -353,7 +353,6 @@ $(document).ready(function () {
   }
 
   $('#save-button').on("click", function(){
-
     var alert_msgs = checkOrtologsDuplication();
 
     if (alert_msgs != null){
@@ -366,20 +365,13 @@ $(document).ready(function () {
       $("#AlertModal").modal("show");
     } else
       generateAndDownloadTsv();
-
   });
-
-  $("#save-anyway").on("click", function(){
-    $("#AlertModal").modal("toggle");
-    generateAndDownloadTsv();
-  });
-
 
   $("#moveClassesLeft").on("click", function(){
     _.each(svg.selectAll("text"), function(el){
       if (elementIsClass(el)){
         var x = el.getBBox().x;
-        el.animate({x: x-25}, 500);
+        el.attr('x', x-50);
       }
     })
   });
@@ -388,7 +380,7 @@ $(document).ready(function () {
     _.each(svg.selectAll("text"), function(el){
       if (elementIsClass(el)){
         var x = el.getBBox().x;
-        el.animate({x: x+25}, 500);
+        el.attr('x', x+50);
       }
     })
   });
@@ -400,20 +392,60 @@ $(document).ready(function () {
 
   }
 
+  function getTreeTransform(){
+    var result = {};
+
+    var transform_attr = $("#svg > svg > g").attr("transform");
+
+    if (transform_attr === undefined){
+      return result;
+    }
+
+    _.each(transform_attr.split(','), function(data) {
+      var spl = data.replace(")", "").split('(');
+      result[spl[0]] = spl[1];
+    });
+
+    return result;
+  }
+
+  function setTreeTransform(attr, value){
+    var current = getTreeTransform();
+
+    current[attr] = value;
+
+    var result = [];
+
+    for (var key in current) {
+      result.push(key+"("+current[key]+")");
+    }
+
+    $("#svg > svg > g").attr("transform", result.join());
+  }
+
+  function getTreeScale(){
+    var transform = getTreeTransform();
+    if (transform.scale == "" || transform.scale == undefined){
+      return 1.0;
+    } else {
+      return parseFloat(transform.scale);
+    }
+  }
+
   $("#zoomIn").on("click", function(){
-    var zoom = getTreeZoom();
-    zoom += 10;
-    $("#svg > svg").css({width: zoom+"%"});
+    var scale = getTreeScale();
+    scale += 0.1;
+    setTreeTransform('scale', scale);
   });
 
   $("#zoomFit").on("click", function(){
-    $("#svg > svg").css({width: "100%"});
+    setTreeTransform('scale', 1.0);
   });
 
   $("#zoomOut").on("click", function(){
-    var zoom = getTreeZoom();
-    zoom -= 10;
-    $("#svg > svg").css({width: zoom+"%"});
+    var scale = getTreeScale();
+    scale -= 0.1;
+    setTreeTransform('scale', scale);
   });
 
   $("button").on("click", function () { this.blur() } )

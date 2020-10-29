@@ -120,10 +120,10 @@ const template = [
 
 if (process.platform === 'darwin') {
   template.unshift({
-    label: "Noodler",
+    label: "Parasorter",
     submenu: [
       {
-        label: 'About Noodler',
+        label: 'About Parasorter',
         role: 'about'
       },
       {
@@ -138,7 +138,7 @@ if (process.platform === 'darwin') {
         type: 'separator'
       },
       {
-        label: 'Hide Noodler',
+        label: 'Hide Parasorter',
         accelerator: 'Command+H',
         role: 'hide'
       },
