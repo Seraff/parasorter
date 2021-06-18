@@ -55,21 +55,42 @@ function TypeSelector() {
 
       me.ort_box = me.svg.rect(w, h, me.size, me.size);
       me.ort_box.attr({class: "checkmark", fill: "#a3ffb8",});
-      me.ort_mark = me.svg.image("img/o.svg", w+1, h-1, 10, 10);
+      // me.ort_mark = me.svg.image("img/o.svg", w+1, h-1, 10, 10);
+      me.ort_mark = me.svg.text(w+1, h+8, 'o');
+      me.ort_mark.attr({
+          'font-size': 12,
+          'fill': 'black',
+          'stroke': 'none',
+          'font-weight': 'bold'
+      });
       me.ort_shape = me.svg.group(me.ort_box, me.ort_mark);
       me.taxa.after(me.ort_shape);
 
       w = w + me.ort_box.getBBox().width + 5;
       me.par_box = me.svg.rect(w, h, me.size, me.size);
       me.par_box.attr({class: "checkmark", fill: "#f1f49c",});
-      me.par_mark = me.svg.image("img/p.svg", w+1, h-1, 10, 10);
+      // me.par_mark = me.svg.image("img/p.svg", w+1, h-1, 10, 10);
+      me.par_mark = me.svg.text(w+1, h+8, 'p');
+      me.par_mark.attr({
+          'font-size': 12,
+          'fill': 'black',
+          'stroke': 'none',
+          'font-weight': 'bold'
+      });
       me.par_shape = me.svg.group(me.par_box, me.par_mark);
       me.ort_shape.after(me.par_shape);
 
       w = w + me.par_box.getBBox().width + 5;
       me.del_box = me.svg.rect(w, h, me.size, me.size);
       me.del_box.attr({class: "checkmark", fill: "#f7b08a",});
-      me.del_mark = me.svg.image("img/d.svg", w+1, h-1, 10, 10);
+      // me.del_mark = me.svg.image("img/d.svg", w+1, h-1, 10, 10);
+      me.del_mark = me.svg.text(w+1, h+8, 'd');
+      me.del_mark.attr({
+          'font-size': 12,
+          'fill': 'black',
+          'stroke': 'none',
+          'font-weight': 'bold'
+      });
       me.del_shape = me.svg.group(me.del_box, me.del_mark);
       me.par_shape.after(me.del_shape);
 

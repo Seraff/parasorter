@@ -3,6 +3,8 @@ tmp/*
 dist/*
 .idea/*
 
+conda/binary/*
+
 # Logs
 logs
 *.log

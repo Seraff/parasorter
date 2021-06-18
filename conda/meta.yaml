@@ -1,0 +1,12 @@
+package:
+  name: parasorter
+  version: 1.0.3
+
+source:
+ path: binary
+
+build:
+  number: 4
+
+about:
+  home: https://github.com/Seraff/noodler
