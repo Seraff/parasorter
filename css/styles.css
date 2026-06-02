@@ -40,6 +40,41 @@ svg {width: 100%; height: auto;}
    cursor       : "pointer";
 }
 
+#find-bar {
+  position: fixed;
+  top: 5px;
+  right: 10px;
+  z-index: 10000;
+  background: #f8f9fa;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+#find-input {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 13px;
+  width: 200px;
+  outline: none;
+}
+
+#find-input:focus {
+  border-color: #28a745;
+}
+
+#find-count {
+  font-size: 12px;
+  color: #666;
+  min-width: 50px;
+  text-align: center;
+}
+
 @-webkit-keyframes rotation {
    from {-webkit-transform: rotate(0deg);}
    to {-webkit-transform: rotate(359deg);}

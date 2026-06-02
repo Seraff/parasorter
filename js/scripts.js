@@ -462,27 +462,121 @@ $(document).ready(function () {
 
   $("button").on("click", function () { this.blur() } )
 
-  // Shortcuts
+  // Find bar
+  var $findBar = $('#find-bar')
+  var $findInput = $('#find-input')
+  var $findCount = $('#find-count')
 
-  // // Find
+  var SVG_NS = 'http://www.w3.org/2000/svg'
+  var FIND_COLOR = '#ffff00'         // bright yellow, like Chrome
+  var FIND_ACTIVE_COLOR = '#ff9632'  // orange for the active match
 
-  // var findInPage = new FindInPage(app.remote.getCurrentWebContents(), {
-  //   offsetTop: 65,
-  //   duration: 150
-  // })
+  var findMatches = []   // matched <text> elements
+  var findRects = []      // yellow rects drawn behind each match
+  var findActiveIndex = -1
 
-  // menu.setCallbackOnItem('find', () => {
-  //   findInPage.openFindWindow()
-  // })
+  function clearFindHighlights() {
+    _.each(findRects, function (rect) {
+      if (rect.parentNode) rect.parentNode.removeChild(rect)
+    })
+    findMatches = []
+    findRects = []
+    findActiveIndex = -1
+  }
 
-  // // Quit
-  // menu.setCallbackOnItem('quit', () => {
-  //   if (modes_touched && !confirm('Are you sure? All unsaved data will be lost.')) {
-  //     return true
-  //   }
+  function updateFindCount() {
+    if (findMatches.length === 0) {
+      $findCount.text('0/0')
+    } else {
+      $findCount.text((findActiveIndex + 1) + '/' + findMatches.length)
+    }
+  }
 
-  //   app.remote.app.quit()
-  // })
+  function highlightMatch(textEl) {
+    var bbox = textEl.getBBox()
+    var rect = document.createElementNS(SVG_NS, 'rect')
+    rect.setAttribute('x', bbox.x - 1)
+    rect.setAttribute('y', bbox.y - 1)
+    rect.setAttribute('width', bbox.width + 2)
+    rect.setAttribute('height', bbox.height + 2)
+    rect.setAttribute('fill', FIND_COLOR)
+    // insert before the text so the rect renders behind it
+    textEl.parentNode.insertBefore(rect, textEl)
+    return rect
+  }
+
+  function setActiveMatch(index) {
+    if (findMatches.length === 0) return
+    if (index < 0) index = findMatches.length - 1
+    if (index >= findMatches.length) index = 0
+
+    if (findActiveIndex >= 0 && findRects[findActiveIndex]) {
+      findRects[findActiveIndex].setAttribute('fill', FIND_COLOR)
+    }
+    findActiveIndex = index
+    findRects[findActiveIndex].setAttribute('fill', FIND_ACTIVE_COLOR)
+    findMatches[findActiveIndex].scrollIntoView({ block: 'center', inline: 'center' })
+    updateFindCount()
+  }
+
+  function runFind() {
+    var text = $findInput.val().toLowerCase()
+    clearFindHighlights()
+
+    if (text.length < 2) {
+      $findCount.text('')
+      return
+    }
+
+    $('#svg text').each(function () {
+      if ($(this).text().toLowerCase().indexOf(text) !== -1) {
+        findMatches.push(this)
+        findRects.push(highlightMatch(this))
+      }
+    })
+
+    if (findMatches.length > 0) {
+      setActiveMatch(0)
+    } else {
+      updateFindCount()
+    }
+  }
+
+  function openFindBar() {
+    $findBar.show()
+    $findInput.focus().select()
+    runFind()
+  }
+
+  function closeFindBar() {
+    $findBar.hide()
+    $findInput.val('')
+    $findCount.text('')
+    clearFindHighlights()
+  }
+
+  $findInput.on('input', runFind)
+
+  $('#find-next').on('click', function () {
+    setActiveMatch(findActiveIndex + 1)
+    $findInput.focus()
+  })
+
+  $('#find-prev').on('click', function () {
+    setActiveMatch(findActiveIndex - 1)
+    $findInput.focus()
+  })
+
+  $('#find-close').on('click', closeFindBar)
+
+  $findInput.on('keydown', function (e) {
+    if (e.key === 'Escape') closeFindBar()
+    if (e.key === 'Enter') {
+      setActiveMatch(findActiveIndex + (e.shiftKey ? -1 : 1))
+    }
+  })
+
+  window.menuApi.onFind(openFindBar)
 
   window.menuApi.onOpenTree(() => {
     $('#open-button').click()

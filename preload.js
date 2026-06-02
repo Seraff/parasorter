@@ -18,4 +18,5 @@ contextBridge.exposeInMainWorld('menuApi', {
     onOpenTree: (cb) => ipcRenderer.on('menu:open-tree', () => cb()),
     onImportTsv: (cb) => ipcRenderer.on('menu:import-tsv', () => cb()),
     onSaveTsv: (cb) => ipcRenderer.on('menu:save-tsv', () => cb()),
+    onFind: (cb) => ipcRenderer.on('menu:find', () => cb()),
 });
