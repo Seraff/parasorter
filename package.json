@@ -38,7 +38,6 @@
   },
   "build": {
     "mac": {
-      "//": "To run a deep sign, run: codesign --force --deep --sign - dist/mac-arm64/parasorter.app",
       "identity": null,
       "target": [
         {
