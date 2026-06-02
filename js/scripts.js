@@ -570,9 +570,14 @@ $(document).ready(function () {
   $('#find-close').on('click', closeFindBar)
 
   $findInput.on('keydown', function (e) {
-    if (e.key === 'Escape') closeFindBar()
     if (e.key === 'Enter') {
       setActiveMatch(findActiveIndex + (e.shiftKey ? -1 : 1))
+    }
+  })
+
+  $(document).on('keydown', function (e) {
+    if (e.key === 'Escape' && $findBar.is(':visible')) {
+      closeFindBar()
     }
   })
 
