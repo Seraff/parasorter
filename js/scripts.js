@@ -319,6 +319,22 @@ $(document).ready(function () {
         openSVG(data)
         modes_touched = false
         hide_spinner()
+
+        // Look for a sibling annotation file with the same name but .tsv extension
+        var tsvPath = path.replace(/\.svg$/i, '.tsv')
+
+        if (tsvPath !== path && window.modules.fs.existsSync(tsvPath)) {
+          var tsvName = tsvPath.split(/[\\/]/).pop()
+
+          if (confirm('Load annotation file "' + tsvName + '" for this tree?')) {
+            window.modules.fs.readFile(tsvPath, 'utf8', (tsvErr, tsvData) => {
+              if (!tsvErr) {
+                applyCSV(tsvData)
+                modes_touched = false
+              }
+            })
+          }
+        }
       })
     })
   })
