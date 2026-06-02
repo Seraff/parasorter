@@ -1,6 +1,6 @@
 {
   "name": "parasorter",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -8,7 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
     "dist": "electron-builder -mwl",
-    "dist-mac": "electron-builder -m"
+    "dist-mac": "electron-builder -m",
+    "dist-win": "electron-builder -w",
+    "dist-lin": "electron-builder -l"
   },
   "repository": {
     "type": "git",
@@ -33,5 +35,17 @@
     "bootstrap": "^4.5.0",
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1"
+  },
+  "build": {
+    "mac": {
+      "//": "To run a deep sign, run: codesign --force --deep --sign - dist/mac-arm64/parasorter.app",
+      "identity": null,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": "arm64"
+        }
+      ]
+    }
   }
 }
