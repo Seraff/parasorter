@@ -397,67 +397,28 @@ $(document).ready(function () {
     })
   });
 
-  $("#svg > svg").css({width: "50%"});
+  // Zoom by changing the SVG element's width (height is auto + viewBox,
+  // so it scales proportionally and the scrollable area grows with it).
+  var BASE_WIDTH_PERCENT = 100;
+  var treeScale = 1.0;
 
-  function getTreeZoom(){
-    return( 100 * parseFloat($("#svg > svg").css('width')) / parseFloat($("#svg > svg").parent().css('width')) );
-
-  }
-
-  function getTreeTransform(){
-    var result = {};
-
-    var transform_attr = $("#svg > svg > g").attr("transform");
-
-    if (transform_attr === undefined){
-      return result;
-    }
-
-    _.each(transform_attr.split(','), function(data) {
-      var spl = data.replace(")", "").split('(');
-      result[spl[0]] = spl[1];
-    });
-
-    return result;
-  }
-
-  function setTreeTransform(attr, value){
-    var current = getTreeTransform();
-
-    current[attr] = value;
-
-    var result = [];
-
-    for (var key in current) {
-      result.push(key+"("+current[key]+")");
-    }
-
-    $("#svg > svg > g").attr("transform", result.join());
-  }
-
-  function getTreeScale(){
-    var transform = getTreeTransform();
-    if (transform.scale == "" || transform.scale == undefined){
-      return 1.0;
-    } else {
-      return parseFloat(transform.scale);
-    }
+  function applyZoom(){
+    $("#svg > svg").css({ width: (BASE_WIDTH_PERCENT * treeScale) + "%" });
   }
 
   $("#zoomIn").on("click", function(){
-    var scale = getTreeScale();
-    scale += 0.1;
-    setTreeTransform('scale', scale);
+    treeScale += 0.1;
+    applyZoom();
   });
 
   $("#zoomFit").on("click", function(){
-    setTreeTransform('scale', 1.0);
+    treeScale = 1.0;
+    applyZoom();
   });
 
   $("#zoomOut").on("click", function(){
-    var scale = getTreeScale();
-    scale -= 0.1;
-    setTreeTransform('scale', scale);
+    treeScale = Math.max(0.1, treeScale - 0.1);
+    applyZoom();
   });
 
   $("button").on("click", function () { this.blur() } )
