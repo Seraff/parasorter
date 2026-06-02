@@ -1,6 +1,11 @@
-var electron = require("electron")
-var app = electron.app
-var Menu = electron.Menu
+const { app, remote, BrowserWindow, Menu } = require("electron")
+
+function sendToFocusedWindow(channel, payload) {
+  const win = BrowserWindow.getFocusedWindow();
+  if (win && !win.isDestroyed()) {
+    win.webContents.send(channel, payload);
+  }
+}
 
 const template = [
   {
@@ -9,17 +14,20 @@ const template = [
       {
         id: "open-tree",
         label: "Open Tree",
-        accelerator: "CmdOrCtrl+O"
+        accelerator: "CmdOrCtrl+O",
+        click: () => sendToFocusedWindow('menu:open-tree')
       },
       {
         id: "apply-tsv",
         label: "Import tsv",
-        accelerator: "CmdOrCtrl+Shift+O"
+        accelerator: "CmdOrCtrl+Shift+O",
+        click: () => sendToFocusedWindow('menu:import-tsv')
       },
       {
         id: "save-tsv",
         label: "Save tsv",
-        accelerator: "CmdOrCtrl+S"
+        accelerator: "CmdOrCtrl+S",
+        click: () => sendToFocusedWindow('menu:save-tsv')
       }
     ]
   },
@@ -29,7 +37,8 @@ const template = [
       {
         id: "find",
         label: 'Find',
-        accelerator: 'CmdOrCtrl+F'
+        accelerator: 'CmdOrCtrl+F',
+        click: () => sendToFocusedWindow('menu:find')
       },
       {
         type: 'separator'
@@ -158,7 +167,8 @@ if (process.platform === 'darwin') {
 
         label: 'Quit',
         id: 'quit',
-        accelerator: 'Command+Q'
+        accelerator: 'Command+Q',
+        role: 'quit'
       },
     ]
   });
@@ -175,11 +185,6 @@ function build_menu() {
   menu.enableItemById = function(id){
     var item = menu.getMenuItemById(id);
     item.enabled = true;
-  }
-
-  menu.setCallbackOnItem = function(item_id, callback){
-    var item = menu.getMenuItemById(item_id);
-    item.click = callback;
   }
 
   Menu.setApplicationMenu(menu);

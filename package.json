@@ -1,8 +1,8 @@
 {
   "name": "parasorter",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -26,12 +26,12 @@
   },
   "homepage": "https://github.com/Seraff/electron-tree-checkboxer#readme",
   "devDependencies": {
-    "electron": "^9.0.3",
-    "electron-builder": "^22.7.0"
+    "electron": "^39.2.7",
+    "electron-builder": "^26.0.12"
   },
   "dependencies": {
     "bootstrap": "^4.5.0",
-    "electron-find": "^1.0.6",
+    "electron-find-in-page": "^1.0.8",
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1"
   }

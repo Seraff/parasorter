@@ -1,10 +1,5 @@
 'use strict';
 
-const app = require('electron')
-const { BrowserWindow, dialog } = require('electron').remote
-const fs = require('fs')
-const FindInPage = require('electron-find').FindInPage
-
 function download(data, filename) {
     var file = new Blob([data], {type: "text/plain"});
     if (window.navigator.msSaveOrOpenBlob) // IE10+
@@ -53,44 +48,40 @@ function TypeSelector() {
       var w = me.taxa.getBBox().width + 5;
       var h = me.taxa.getBBox().height / 2 - 5;
 
+      var text_w = w + 1;
+      var text_h = h + 8;
+
+      var checkmark_text_attrs = {
+        "font-size"   : 12,
+        "fill"        : 'black',
+        "stroke"      : 'none',
+        "font-weight" : 'bold',
+        "cursor"      : "pointer"
+      }
+
       me.ort_box = me.svg.rect(w, h, me.size, me.size);
-      me.ort_box.attr({class: "checkmark", fill: "#a3ffb8",});
-      // me.ort_mark = me.svg.image("img/o.svg", w+1, h-1, 10, 10);
-      me.ort_mark = me.svg.text(w+1, h+8, 'o');
-      me.ort_mark.attr({
-          'font-size': 12,
-          'fill': 'black',
-          'stroke': 'none',
-          'font-weight': 'bold'
-      });
+      me.ort_box.attr({class: "checkmark", fill: "#a3ffb8", cursor: "pointer"});
+
+      me.ort_mark = me.svg.text(text_w, text_h, 'o');
+      me.ort_mark.attr(checkmark_text_attrs);
       me.ort_shape = me.svg.group(me.ort_box, me.ort_mark);
       me.taxa.after(me.ort_shape);
 
       w = w + me.ort_box.getBBox().width + 5;
+      text_w = w + 1;
       me.par_box = me.svg.rect(w, h, me.size, me.size);
-      me.par_box.attr({class: "checkmark", fill: "#f1f49c",});
-      // me.par_mark = me.svg.image("img/p.svg", w+1, h-1, 10, 10);
-      me.par_mark = me.svg.text(w+1, h+8, 'p');
-      me.par_mark.attr({
-          'font-size': 12,
-          'fill': 'black',
-          'stroke': 'none',
-          'font-weight': 'bold'
-      });
+      me.par_box.attr({class: "checkmark", fill: "#f1f49c", cursor: "pointer"});
+      me.par_mark = me.svg.text(text_w, text_h, 'p');
+      me.par_mark.attr(checkmark_text_attrs);
       me.par_shape = me.svg.group(me.par_box, me.par_mark);
       me.ort_shape.after(me.par_shape);
 
       w = w + me.par_box.getBBox().width + 5;
+      text_w = w + 1;
       me.del_box = me.svg.rect(w, h, me.size, me.size);
-      me.del_box.attr({class: "checkmark", fill: "#f7b08a",});
-      // me.del_mark = me.svg.image("img/d.svg", w+1, h-1, 10, 10);
-      me.del_mark = me.svg.text(w+1, h+8, 'd');
-      me.del_mark.attr({
-          'font-size': 12,
-          'fill': 'black',
-          'stroke': 'none',
-          'font-weight': 'bold'
-      });
+      me.del_box.attr({class: "checkmark", fill: "#f7b08a", cursor: "pointer"});
+      me.del_mark = me.svg.text(text_w, text_h, 'd');
+      me.del_mark.attr(checkmark_text_attrs);
       me.del_shape = me.svg.group(me.del_box, me.del_mark);
       me.par_shape.after(me.del_shape);
 
@@ -159,7 +150,10 @@ function TypeSelector() {
 
 function elementIsTaxa(el){
   var text = el.attr("text");
-  return (!text.match(/^[\d.]+$/g) && !text.match(/^\</g) && !elementIsClass(el));
+  return (!text.match(/^[\d.]+$/g) &&
+          !text.match(/^\d+\/\d+$/g) &&
+          !text.match(/^\</g) &&
+          !elementIsClass(el));
 }
 
 function elementIsClass(el){
@@ -315,19 +309,17 @@ $(document).ready(function () {
 
     show_spinner()
 
-    dialog.showOpenDialog(options).then(result => {
-      if (result.filePaths.length == 0) {
+    window.api.openTreeFileDialog(options).then(path => {
+      if (path == null) {
         hide_spinner()
         return false
       }
 
-      var path = result.filePaths[0]
-      fs.readFile(path, 'utf8', (err, data) => {
+      window.modules.fs.readFile(path, 'utf8', (err, data) => {
         openSVG(data)
         modes_touched = false
         hide_spinner()
       })
-
     })
   })
 
@@ -344,14 +336,13 @@ $(document).ready(function () {
 
     show_spinner()
 
-    dialog.showOpenDialog(options).then(result => {
-      if (result.filePaths.length == 0) {
+    window.api.openTsvFileDialog(options).then(path => {
+      if (path == null) {
         hide_spinner()
         return false
       }
 
-      var path = result.filePaths[0]
-      fs.readFile(path, 'utf8', (err, data) => {
+      window.modules.fs.readFile(path, 'utf8', (err, data) => {
         applyCSV(data)
         modes_touched = false
         hide_spinner()
@@ -473,38 +464,36 @@ $(document).ready(function () {
 
   // Shortcuts
 
-  var menu = app.remote.Menu.getApplicationMenu()
+  // // Find
 
-  menu.setCallbackOnItem('open-tree', () => {
-    $("#open-button").click()
-  })
+  // var findInPage = new FindInPage(app.remote.getCurrentWebContents(), {
+  //   offsetTop: 65,
+  //   duration: 150
+  // })
 
-  menu.setCallbackOnItem('apply-tsv', () => {
+  // menu.setCallbackOnItem('find', () => {
+  //   findInPage.openFindWindow()
+  // })
+
+  // // Quit
+  // menu.setCallbackOnItem('quit', () => {
+  //   if (modes_touched && !confirm('Are you sure? All unsaved data will be lost.')) {
+  //     return true
+  //   }
+
+  //   app.remote.app.quit()
+  // })
+
+  window.menuApi.onOpenTree(() => {
+    $('#open-button').click()
+  });
+
+  window.menuApi.onImportTsv(() => {
     $("#apply-button").click()
-  })
+  });
 
-  menu.setCallbackOnItem('save-tsv', () => {
+  window.menuApi.onSaveTsv(() => {
     $("#save-button").click()
-  })
-
-  // Find
-
-  var findInPage = new FindInPage(app.remote.getCurrentWebContents(), {
-    offsetTop: 65,
-    duration: 150
-  })
-
-  menu.setCallbackOnItem('find', () => {
-    findInPage.openFindWindow()
-  })
-
-  // Quit
-  menu.setCallbackOnItem('quit', () => {
-    if (modes_touched && !confirm('Are you sure? All unsaved data will be lost.')) {
-      return true
-    }
-
-    app.remote.app.quit()
-  })
+  });
 
 });

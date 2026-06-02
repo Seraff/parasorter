@@ -50,3 +50,6 @@ node_modules/
 # python
 .pyc
 __pycache__/
+
+.history/
+.vscode/

@@ -11,21 +11,33 @@ svg {width: 100%; height: auto;}
 }
 
 #spinner {
-   position: absolute;
-   left: 50%;
-   top: 35%;
-   height:60px;
-   width:60px;
-   margin:0px auto;
-   -webkit-animation: rotation .6s infinite linear;
-   -moz-animation: rotation .6s infinite linear;
-   -o-animation: rotation .6s infinite linear;
-   animation: rotation .6s infinite linear;
-   border-left:6px solid rgba(0,174,239,.15);
-   border-right:6px solid rgba(0,174,239,.15);
-   border-bottom:6px solid rgba(0,174,239,.15);
-   border-top:6px solid rgba(0,174,239,.8);
-   border-radius:100%;
+   position             : absolute;
+   left                 : 50%;
+   top                  : 35%;
+   height               : 60px;
+   width                : 60px;
+   margin               : 0px auto;
+   -webkit-animation    : rotation .6s infinite linear;
+   -moz-animation       : rotation .6s infinite linear;
+   -o-animation         : rotation .6s infinite linear;
+   animation            : rotation .6s infinite linear;
+   border-left          : 6px solid rgba(0,174,239,.15);
+   border-right         : 6px solid rgba(0,174,239,.15);
+   border-bottom        : 6px solid rgba(0,174,239,.15);
+   border-top           : 6px solid rgba(0,174,239,.8);
+   border-radius        : 100%;
+}
+
+.checkmark {
+   cursor: "pointer"
+}
+
+.checkmark-text {
+   font-size    : 12;
+   fill         : 'black';
+   stroke       : 'none';
+   font-weight  : 'bold';
+   cursor       : "pointer";
 }
 
 @-webkit-keyframes rotation {
