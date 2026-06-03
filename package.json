@@ -1,7 +1,9 @@
 {
   "name": "parasorter",
   "version": "1.0.7",
-  "description": "",
+  "description": "A cross-platform desktop application for manual inspection of homolog trees. The part of PhyloFisher project.",
+  "author": "Serafim Nenarokov",
+  "license": "MIT License (see LICENSE file)",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -9,8 +11,8 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder -mwl",
     "dist-mac": "electron-builder -m",
-    "dist-win": "electron-builder -w",
-    "dist-lin": "electron-builder -l"
+    "dist-win": "electron-builder -w --x64",
+    "dist-lin": "electron-builder -l --x64"
   },
   "repository": {
     "type": "git",
@@ -21,8 +23,6 @@
     "bioinformatics",
     "phylofisher"
   ],
-  "author": "Serafim Nenarokov",
-  "license": "SEE LICENSE IN LICENSE",
   "bugs": {
     "url": "https://github.com/Seraff/electron-tree-checkboxer/issues"
   },

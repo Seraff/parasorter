@@ -1,10 +1,31 @@
-const { app, remote, BrowserWindow, Menu } = require("electron")
+const { app, remote, shell, BrowserWindow, Menu } = require("electron")
+const { showAbout } = require('./about')
 
 function sendToFocusedWindow(channel, payload) {
   const win = BrowserWindow.getFocusedWindow();
   if (win && !win.isDestroyed()) {
     win.webContents.send(channel, payload);
   }
+}
+
+help_menu = {
+  label: 'Help',
+  role: 'help',
+  submenu: [
+    {
+      label: 'Online Documentation',
+      click: function () { shell.openExternal('https://thebrownlab.github.io/phylofisher-pages/') }
+    }
+  ]
+}
+
+about_item = {
+  label: 'About Parasorter',
+  click: (menuItem, browserWindow) => showAbout(browserWindow)
+}
+
+if (process.platform !== 'darwin') {
+  help_menu.submenu.unshift(about_item)
 }
 
 const template = [
@@ -115,26 +136,15 @@ const template = [
       }
     ]
   },
-  {
-    label: 'Help',
-    role: 'help',
-    submenu: [
-      {
-        label: 'Learn More',
-        click: function() { shell.openExternal('http://electron.atom.io') }
-      },
-    ]
-  },
+  help_menu
 ];
+
 
 if (process.platform === 'darwin') {
   template.unshift({
     label: "Parasorter",
     submenu: [
-      {
-        label: 'About Parasorter',
-        role: 'about'
-      },
+      about_item,
       {
         type: 'separator'
       },

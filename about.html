@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #2b2f33;
+            background: #fff;
+            -webkit-user-select: none;
+            /* native feel: no text selection */
+            user-select: none;
+            cursor: default;
+        }
+
+        .about-wrap {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 24px;
+            text-align: center;
+        }
+
+        .app-name {
+            font-weight: 600;
+            letter-spacing: .2px;
+            margin: 0;
+        }
+
+        .app-desc {
+            font-size: .85rem;
+            line-height: 1.45;
+            max-width: 320px;
+        }
+
+        .link-row a,
+        .doi a {
+            text-decoration: none;
+        }
+
+        .link-row a:hover,
+        .doi a:hover {
+            text-decoration: underline;
+        }
+
+        .doi code {
+            font-size: .8rem;
+        }
+
+        .footer {
+            font-size: .72rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="about-wrap">
+        <h1 class="app-name h4" id="name"></h1>
+        <span class="badge rounded-pill bg-secondary text-white mt-2" id="version"></span>
+
+        <p class="app-desc text-secondary mt-3 mb-3" id="description"></p>
+
+        <div class="link-row d-flex flex-column gap-1 mb-3 small">
+            <a href="https://github.com/AlexTiceLab/parasorter" target="_blank" rel="noopener">ParaSorter repository</a>
+            <a href="https://github.com/TheBrownLab/PhyloFisher" target="_blank" rel="noopener">PhyloFisher
+                repository</a>
+        </div>
+
+        <div class="doi text-secondary mb-2">
+            <div class="small mb-1">Cite this software</div>
+            <a href="https://doi.org/10.1371/journal.pbio.3001365" target="_blank" rel="noopener">
+                <code>doi.org/10.1371/journal.pbio.3001365</code>
+            </a>
+            <a href="https://doi.org/10.1002/cpz1.969 " target="_blank" rel="noopener">
+                <code>doi.org/10.1002/cpz1.969</code>
+            </a>
+        </div>
+
+        <div class="footer text-muted mt-2" id="copyright"></div>
+    </div>
+
+    <script>
+        window.appInfo.get().then(info => {
+            document.getElementById('name').textContent = info.name
+            document.getElementById('version').textContent = 'v' + info.version
+            document.getElementById('description').textContent = info.description
+            document.getElementById('copyright').textContent =
+                '© ' + info.year + ' ' + info.author + ' · MIT License'
+        })
+    </script>
+</body>
+
+</html>
